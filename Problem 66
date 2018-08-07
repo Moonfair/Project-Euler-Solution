@@ -6,6 +6,9 @@
 
 #include<bits/stdc++.h>
 using namespace std;
+
+//以下是偷来的大数模板。。。
+
 /*
 * Created by ShiJiahuan(li) in haut.
 * For more please visit www.shallweitalk.com.
