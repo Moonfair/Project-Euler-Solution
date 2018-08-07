@@ -1,0 +1,96 @@
+//算是一个模拟？
+//找到因子数扩大到2倍需要付出的代价（老的质因子需要加上的幂次，或是新添加一个质因子）
+//每次选取其中最小的（通过维护一个堆实现）
+//最后堆中剩下每个元素的再除以底数，相乘后就是所需的有2^n个因子最小数
+
+//本题由cy1999大神秒掉，2333！
+
+//以下为代码正文
+
+#include<bits/stdc++.h>
+#define ll long long
+using namespace std;
+int MAXN=600000,curnum=0;
+bool vis[10000000];
+vector<int> sushu;
+int cursushu=0;
+struct node{
+	int dishu;
+	int zhishu;
+	ll zhi;
+
+};
+bool operator<(node a,node b)
+{
+    return a.zhi>b.zhi;
+}
+
+priority_queue<node> dui;
+ll ans=1;
+
+void dabiao(){
+    for(ll i=2;;i++){
+        if(!vis[i]){
+            sushu.push_back(i);
+        }
+        if(sushu.size()>500500){
+            break;
+        }
+        for(ll j=i*i;j<10000000;j+=i){
+            vis[j]=true;
+        }
+    }
+}
+void addnew(int x){
+	node p;
+	p.dishu=sushu[x];
+	p.zhishu=1;
+	p.zhi=p.dishu;
+	dui.push(p);
+}
+
+/*void update_ans(node a){
+	ll tmp=pow(a.dishu,a.zhishu);
+	ans*=tmp;
+	ans%=500500507;
+}*/
+
+void update_old_node(node tmp){
+	node a;
+	a.dishu=tmp.dishu;
+	a.zhishu=tmp.zhishu*2;
+	a.zhi=1;
+	for(int i=0;i<a.zhishu;i++){
+        a.zhi*=a.dishu;
+	}
+	dui.push(a);
+}
+
+void act(){
+	node tmp=dui.top();
+	dui.pop();
+	//update_ans(tmp);
+	if(tmp.dishu==sushu[cursushu-1]){
+		addnew(cursushu++);
+		update_old_node(tmp);
+	}
+	else{
+		update_old_node(tmp);
+	}
+}
+
+int main()
+{
+	int n;
+	cin>>n;
+    dabiao();
+	addnew(cursushu++);
+	for(int i=0;i<n;i++)
+		act();
+    while(!dui.empty()){
+        ans*=(dui.top().zhi/dui.top().dishu%500500507);
+        ans%=500500507;
+        dui.pop();
+    }
+    cout<<ans;
+}
