@@ -1,0 +1,34 @@
+//本来是个暴力，但通过分析可以去掉不少冗杂操作
+
+def generate_primes(limit):  //筛选limit以下的素数并返回 
+	is_prime = [True for i in range(limit)]
+	for i in range(2, limit):
+		if is_prime[i]:
+			j = 2
+			while i * j < limit:
+				is_prime[i * j] = False
+				j += 1
+	return filter(lambda x: is_prime[x], range(2, limit))
+
+primes = set(generate_primes(1000000))  //素数表，用于判断式子的结果是否为素数
+b_candidates = generate_primes(1000)  //b的取值范围(b一定是大于0的素数,因为必须满足n=0时式子的结果为素数)
+
+def count_produced_prime(a, b):   //获取连续的长度
+	ret = []
+	for n in range(0, b):    //n的范围为0到b，因为n=b时结果必然为合数
+		c = n * n + a * n + b
+		if c in primes:
+			ret.append(c)
+		else:
+			return len(ret)
+	return len(ret)
+
+ans = 0
+count = 0
+for b in b_candidates:
+	for a in range(-999, 1000):
+		tmp = count_produced_prime(a, b)
+		if tmp > count:
+			ans, count = a * b, tmp
+
+print ans
