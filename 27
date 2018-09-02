@@ -1,0 +1,33 @@
+
+def generate_primes(limit):
+	is_prime = [True for i in range(limit)]
+	for i in range(2, limit):
+		if is_prime[i]:
+			j = 2
+			while i * j < limit:
+				is_prime[i * j] = False
+				j += 1
+	return filter(lambda x: is_prime[x], range(2, limit))
+
+primes = set(generate_primes(1000000))
+b_candidates = generate_primes(1000)
+
+def count_produced_prime(a, b):
+	ret = []
+	for n in range(0, b):
+		c = n * n + a * n + b
+		if c in primes:
+			ret.append(c)
+		else:
+			return len(ret)
+	return len(ret)
+
+ans = 0
+count = 0
+for b in b_candidates:
+	for a in range(-999, 1000):
+		tmp = count_produced_prime(a, b)
+		if tmp > count:
+			ans, count = a * b, tmp
+
+print ans
