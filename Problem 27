@@ -32,3 +32,4 @@ for b in b_candidates:
 			ans, count = a * b, tmp
 
 print ans
+
