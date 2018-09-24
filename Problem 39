@@ -1,0 +1,27 @@
+# If p is the perimeter of a right angle triangle with integral length
+
+# sides, {a,b,c}, there are exactly three solutions for p = 120.
+
+# {20,48,52}, {24,45,51}, {30,40,50}
+
+# For which value of p <= 1000, is the number of solutions maximised?
+
+def get_right_triangle_solutions(perimeter):  #周长为p时，找到符合条件解的个数
+	count = 0
+	for a in range(1, perimeter / 2):           #此处可有计算得，a的取值范围为1到p/(2+sqrt(2)),本题中进行了增大
+		if (p * p - 2 * p * a) % (2 * p - 2 * a) == 0:
+  #上边两行是代码的难点
+  #因为是直角三角形，所以a^2+b^2=c^2，而c=p-a-b，所以a^2+b^2=(p-a-b)^2
+  #解得b=p*(p-2*a)/(2*p-2*a)
+  #至此，问题转化为遍历a，使得b为整数，即为如上代码
+			count += 1
+	return count
+
+ans = 0
+solutions = 0
+for p in range(4, 1001):                      #此处可以由一个极其玄学的过程知道， p必然为偶数 ，可以通过对a,b的奇偶性进行分析验证
+	s = get_right_triangle_solutions(p)
+	if s > solutions:
+		ans, solutions = p, s
+
+print ans
