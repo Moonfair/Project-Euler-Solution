@@ -1,0 +1,84 @@
+# A natural number, N, that can be written as the sum and
+
+# product of a given set of at least two natural numbers,
+
+# {a1, a2, ... , ak} is called a product-sum number:
+
+# N = a_1 + a_2 + ... + a_k = a_1 x a_2 x ... x a_k.
+
+# For example, 6 = 1 + 2 + 3 = 1 x 2 x 3.
+
+# For a given set of size, k, we shall call the smallest N
+
+# with this property a minimal product-sum number. The
+
+# minimal product-sum numbers for sets of size, k = 2, 3,
+
+# 4, 5, and 6 are as follows.
+
+# k = 2: 4 = 2 x 2 = 2 + 2
+
+# k = 3: 6 = 1 x 2 x 3 = 1 + 2 + 3
+
+# k = 4: 8 = 1 x 1 x 2 x 4 = 1 + 1 + 2 + 4
+
+# k = 5: 8 = 1 x 1 x 2 x 2 x 2 = 1 + 1 + 2 + 2 + 2
+
+# k = 6: 12 = 1 x 1 x 1 x 1 x 2 x 6 = 1 + 1 + 1 + 1 + 2 + 6
+
+# Hence for 2 <= k <= 6, the sum of all the minimal product-sum
+
+# numbers is 4 + 6 + 8 + 12 = 30; note that 8 is only counted
+
+# once in the sum.
+
+# In fact, as the complete set of minimal product-sum numbers
+
+# for 2 <= k <= 12 is {4, 6, 8, 12, 15, 16}, the sum is 61.
+
+# What is the sum of all the minimal product-sum numbers for
+
+# 2 <= k <= 12000?
+
+limit = 12000
+
+ans = [2 * k for k in range(12001)]
+
+#ans[k]是因子个数为k时，最小的积合数n，每个n都被初始化为2*k
+#因为当n等于2*k时，一定为积合数，它总能被分解为2+k+1*(k-2)这样的k个数，显然它们的乘积也是2*k
+#因此，2*k是ans[k]的上界
+
+def get_product_sum(num, nprod, nsum, start):
+
+#对于一个因子组合，找到其写成积合数形式时因子的个数k  
+#其中num为因子的个数，nprob为因子的乘积，nsum为因子的和，start为“增添一个因子，以寻找下一个因子组合”时增加的那个因子的遍历起点
+
+#关系比较乱，但确实如此。
+#首先我们操作的对象确实是"因子组合"而不是一个数，
+#因为“数”的因数分解方式是不定的，这对于枚举情况十分不利，所以我们选择枚举“因子组合”，这点很关键。
+#只有这样，我们才能通过“加入一个因子”的方式来进行递归的下一步。
+#如此，"k"则是先把这些因子乘起来，然后再将那个“积”，分解成"符合积合数规则"的因子组成中的因子个数。
+
+	k = nprod - nsum + num	
+  
+  #承接上文，为什么可以肯定，这样一个“积”一定能分解出一套“符合积合数规则”的因子呢？
+  #很简单，一个因子组合之所以"不符合积合数规则"，是因为它的“积”和“合”不相等，或者说，“积”比“和”要大。
+  #那么，我们只用在因子组合里加上若干个“1”即可。
+  #也是基于这一结论，我们得以推出上边的公式，直接计算出n=nprob时对应的k。
+  
+  if k <= limit:
+  
+		ans[k] = min(nprod, ans[k])
+    
+    #接上文，这个n不一定是最小的，我们只用在遍历过程中维护min即可
+
+		for i in range(start, limit / nprod * 2 + 1):
+
+			get_product_sum(num + 1, nprod * i, nsum + i, i)
+      
+      #开始遍历新加入的因子i,并在for中设置上界使得新的积不大于2*k，
+      #同时修改四项参数以进入下一重递归
+
+get_product_sum(0, 1, 0, 2)
+
+print sum(set(ans[2:]))
